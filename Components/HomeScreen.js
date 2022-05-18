@@ -7,17 +7,24 @@ import {
 	TouchableOpacity,
 	StatusBar,
 } from "react-native";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
+import jwtDecode from "jwt-decode";
 
 const HomeScreen = ({ navigation }) => {
+	
+	const [token, setToken] = useState("");
+	const [userEmail, setUserEmail] = useState("");
+	const [userType, setUserType] = useState("");
+
 	const image = {
 		uri: "https://firebasestorage.googleapis.com/v0/b/tcuhub-cf9e1.appspot.com/o/images%2Fbackground%20image.png?alt=media&token=707b9706-c43e-48ed-a859-07e786939a81",
 	};
 	const uniTrazeLogo = {
 		uri: "https://firebasestorage.googleapis.com/v0/b/tcuhub-cf9e1.appspot.com/o/images%2Flogo-light.png?alt=media&token=9417a00a-2c1d-4091-8923-59dab5e286b1",
 	};
-
+	
 	return (
 
 	

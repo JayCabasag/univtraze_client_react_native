@@ -8,13 +8,14 @@ import {
 	Text,
 	Alert,StatusBar
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../AuthContext/AuthContext";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 const Login = ({ navigation }) => {
+
 	const image = {
 		uri: "https://firebasestorage.googleapis.com/v0/b/tcuhub-cf9e1.appspot.com/o/images%2Flogin_image.png?alt=media&token=ebb53e48-2bc0-485d-8456-fe8a31683061",
 	};
@@ -34,6 +35,20 @@ const Login = ({ navigation }) => {
 
 	async function save(key, value) {
 		await SecureStore.setItemAsync(key, value);
+	}
+
+	useEffect(() => {
+		getValueFor("x-token");
+	}, []);
+
+	async function getValueFor(key) {
+		let result = await SecureStore.getItemAsync(key);
+		if (result) {
+			setToken(result);
+			decodeJwt(result);
+		} else {
+			navigation.navigate("Login");
+		}
 	}
 
 	const loginNow = async () => {
@@ -68,7 +83,12 @@ const Login = ({ navigation }) => {
 								setErrorMessage(response.data.data);
 							} else {
 								setError(false);
-								save("x-token", response.data.token);
+
+
+								SecureStore.deleteItemAsync('x-token').then(
+									save("x-token", response.data.token)
+								);
+
 								setEmailInput("");
 								setPasswordInput("");
 								navigation.navigate("Dashboard");
@@ -126,8 +146,7 @@ const Login = ({ navigation }) => {
 			</View>
 
 			<View style={styles.buttonContainer}>
-			{/* onPress={() => loginNow()} */}
-				<TouchableOpacity  onPress={() =>	navigation.navigate("Dashboard")} style={styles.button}>
+				<TouchableOpacity onPress={() => loginNow()} style={styles.button}>
 					<Text style={styles.buttonText}>Log in</Text>
 				</TouchableOpacity>
 			</View>

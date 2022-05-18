@@ -26,6 +26,9 @@ import {
 	shadowColor,
 } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 import { SafeAreaView } from "react-native-safe-area-context";
+import base64 from 'base-64'
+import QRCode from 'react-native-qrcode-svg';
+
 
 const Dashboard = ({ navigation }) => {
 	const menu_jpg = {
@@ -75,12 +78,21 @@ const Dashboard = ({ navigation }) => {
 	const [deaths, setDeaths] = useState(0);
 
 	const [token, setToken] = useState("");
+
+	const [userFullname, setUserFullname] = useState("")
+	const [profilePhoto, setProfilePhoto] = useState("")
 	const [userEmail, setUserEmail] = useState("");
 	const [userType, setUserType] = useState("");
+	const [firstName, setFirstName] = useState("")
+
+	const [dataToGenerateQr, setDataToGenerateQr] = useState({})
+
 	const [notificationCounts, setNotificationCounts] = useState(1);
 
 	const [visible, setVisible] = useState(false);
 	const [notifVisible, setNotifVisible] = useState(false);
+
+	const [id, setId] = useState(null)
 
 	const toggleBottomNavigationView = () => {
 		//Toggling the visibility state of the bottom sheet
@@ -106,7 +118,7 @@ const Dashboard = ({ navigation }) => {
 		}
 	}
 
-	const decodeJwt = (currentToken) => {
+	const decodeJwt = async (currentToken) => {
 		var decodedToken = jwtDecode(currentToken);
 
 		setUserEmail(decodedToken.result.email);
@@ -117,26 +129,50 @@ const Dashboard = ({ navigation }) => {
 			return;
 		}
 
-		getUserDetails(decodedToken.result.id, currentToken);
+		getUserDetails(decodedToken.result.id, currentToken, decodedToken.result.type);
+		setId(decodedToken.result.id)
+
+		setUserType(decodedToken.result.type)
 	};
 
-	const getUserDetails = async (userId, currentToken) => {
-		const config = {
-			headers: { Authorization: `Bearer ${currentToken}` },
-		};
+	const getUserDetails = async (id, token, type) => {
 
-		await axios
-			.get(`https://univtraze.herokuapp.com/api/user/${userId}`, config)
+		var data = {
+			id
+		}
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${token}`
+		  }
+		  
+		  axios.post(`https://univtraze.herokuapp.com/api/user/${type}`, data, {
+			  headers: headers
+			})
 			.then((response) => {
-				const success = response.data.success;
 
-				if (success === 0) {
-					console.log("Error" + response.data);
-				} else {
-					console.log(response.data);
-					// navigation.navigate('SignUpUserCredentials')
+				if(response.data.success === 0){
+				  return navigation.navigate(`SignUpUserCredentials${type}`)
 				}
-			});
+				var data = Object.values(response.data);
+
+				setUserFullname(data[1].firstname +  " " + data[1].lastname)
+				setProfilePhoto(data[1].profile_url)
+				setFirstName(data[1].firstname)
+
+				//This is where initiation of data to be encrypted is made
+				const arrayData = {"id": id,"type": type};
+				const decodedB64Data = base64.encode(JSON.stringify(arrayData));
+				
+				setDataToGenerateQr(decodedB64Data)
+				
+
+				
+			})
+
+			.catch((error) => {
+				console.log("Error " + error);
+			})
+
 	};
 
 	useEffect(() => {
@@ -243,7 +279,7 @@ const Dashboard = ({ navigation }) => {
 									</View>
 									<View style={{ width: "75%", padding: 10 }}>
 										<Text style={{ fontSize: 22, fontWeight: "bold" }}>
-											John Doe Dimitry
+											{userFullname}
 										</Text>
 
 										<TouchableOpacity
@@ -299,17 +335,23 @@ const Dashboard = ({ navigation }) => {
 														borderColor: "#28CD41",
 														borderRadius: 20,
 														marginTop: 5,
+														padding: 10
 													}}
-												></View>
+												>
+													 	<QRCode value={dataToGenerateQr} size={185}/>
+
+												</View>
 
 												{/* QR Code */}
 												<Text style={{ color: "rgba(54, 77, 57, 0.6)" }}>
-													42121329410
+													{
+														dataToGenerateQr
+													}
 												</Text>
 												{/* User Name */}
 
 												<Text style={{ fontSize: 28, marginTop: 10 }}>
-													John Doe Dimitry
+													{userFullname}
 												</Text>
 
 												{/* User Type */}
@@ -320,7 +362,7 @@ const Dashboard = ({ navigation }) => {
 														color: "rgba(54, 77, 57, 0.6)",
 													}}
 												>
-													STUDENT
+													{userType}
 												</Text>
 
 												{/* Download QR */}
@@ -645,7 +687,7 @@ const Dashboard = ({ navigation }) => {
 				<ScrollView showsVerticalScrollIndicator={false}>
 					<View style={styles.bodyContainer}>
 						<View style={styles.topTextContainer}>
-							<Text style={styles.wlcmTextName}>Welcome back,</Text>
+							<Text style={styles.wlcmTextName}>Welcome back, {firstName} </Text>
 							<Text style={styles.wlcmTextAsking}>
 								What do you want {"\n"}to do?
 							</Text>
