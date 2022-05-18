@@ -4,7 +4,7 @@ import {
 	View,
 	Button,
 	ImageBackground,
-	TouchableOpacity,
+	TouchableOpacity, StatusBar
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import React, { useState, useEffect } from "react";
@@ -38,42 +38,42 @@ const SignUpUserType = ({ navigation }) => {
 		}
 	}
 
-	const decodeJwt = async (currentToken) => {
-		const decodedJwt = jwt_decode(currentToken);
+	// const decodeJwt = async (currentToken) => {
+	// 	const decodedJwt = jwt_decode(currentToken);
 
-		if (decodedJwt.result.type !== null) {
-			if (decodedJwt.result.type === "Student") {
-				navigation.navigate("SignUpUserCredentialsStudent");
-				return;
-			} else if (decodedJwt.result.type === "Employee") {
-				navigation.navigate("SignUpUserCredentialsEmployee");
-				return;
-			} else {
-				navigation.navigate("SignUpUserCredentialsVisitor");
-				return;
-			}
+	// 	if (decodedJwt.result.type !== null) {
+	// 		if (decodedJwt.result.type === "Student") {
+	// 			navigation.navigate("SignUpUserCredentialsStudent");
+	// 			return;
+	// 		} else if (decodedJwt.result.type === "Employee") {
+	// 			navigation.navigate("SignUpUserCredentialsEmployee");
+	// 			return;
+	// 		} else {
+	// 			navigation.navigate("SignUpUserCredentialsVisitor");
+	// 			return;
+	// 		}
+	// 	}
+
+	// 	setUserEmail(decodedJwt.result.email);
+	// 	setUserType(decodedJwt.result.type);
+	// 	setUserId(decodedJwt.result.id);
+	// };
+
+	const SubmitUserType = () => {
+		if (isChecked === "Student") {
+			navigation.navigate("SignUpUserCredentialsStudent");
 		}
 
-		setUserEmail(decodedJwt.result.email);
-		setUserType(decodedJwt.result.type);
-		setUserId(decodedJwt.result.id);
-	};
+		if (isChecked === "Employee") {
+			navigation.navigate("SignUpUserCredentialsEmployee");
+		}
 
-	const SubmitUserType = () =>{
-		if (isChecked === "Student") {
-								navigation.navigate("SignUpUserCredentialsStudent");
-							}
-		
-							if (isChecked === "Employee") {
-								navigation.navigate("SignUpUserCredentialsEmployee");
-							}
-		
-							if (isChecked === "Visitor") {
-								navigation.navigate("SignUpUserCredentialsVisitor");
-							}
+		if (isChecked === "Visitor") {
+			navigation.navigate("SignUpUserCredentialsVisitor");
+		}
 	};
 	// const SubmitUserType = async () => {
-		
+
 	// 	// const config = {
 	// 	// 	headers: { Authorization: `Bearer ${token}` },
 	// 	// };
@@ -112,7 +112,7 @@ const SignUpUserType = ({ navigation }) => {
 	return (
 		<View style={styles.mainView}>
 			{/* <Text>SignUpUserTypess</Text> */}
-
+			<StatusBar animated={true} backgroundColor="#E1F5E4" barStyle='dark-content' />
 			<View style={styles.topContainer}>
 				<ImageBackground
 					source={image}
@@ -179,7 +179,7 @@ const SignUpUserType = ({ navigation }) => {
 					<TouchableOpacity
 						onPress={() => {
 							SubmitUserType();
-				
+
 						}}
 						style={styles.button}
 					>

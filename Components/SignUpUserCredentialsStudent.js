@@ -9,6 +9,7 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	ImageBackground,
+	StatusBar
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
@@ -39,26 +40,26 @@ const SignUpUserCredentialsStudent = ({ navigation }) => {
 		}
 	}
 
-	const decodeJwt = async (currentToken) => {
-		const decodedJwt = jwt_decode(currentToken);
+	// const decodeJwt = async (currentToken) => {
+	// 	const decodedJwt = jwt_decode(currentToken);
 
-		if (decodedJwt.result.type !== null) {
-			if (decodedJwt.result.type === "Student") {
-				navigation.navigate("SignUpUserCredentialsStudent");
-				return;
-			} else if (decodedJwt.result.type === "Employee") {
-				navigation.navigate("SignUpUserCredentialsEmployee");
-				return;
-			} else {
-				navigation.navigate("SignUpUserCredentialsVisitor");
-				return;
-			}
-		}
+	// 	if (decodedJwt.result.type !== null) {
+	// 		if (decodedJwt.result.type === "Student") {
+	// 			navigation.navigate("SignUpUserCredentialsStudent");
+	// 			return;
+	// 		} else if (decodedJwt.result.type === "Employee") {
+	// 			navigation.navigate("SignUpUserCredentialsEmployee");
+	// 			return;
+	// 		} else {
+	// 			navigation.navigate("SignUpUserCredentialsVisitor");
+	// 			return;
+	// 		}
+	// 	}
 
-		setUserEmail(decodedJwt.result.email);
-		setUserType(decodedJwt.result.type);
-		setUserId(decodedJwt.result.id);
-	};
+	// 	setUserEmail(decodedJwt.result.email);
+	// 	setUserType(decodedJwt.result.type);
+	// 	setUserId(decodedJwt.result.id);
+	// };
 
 	const [studentNumber, setStudentNumber] = useState("");
 	const [firstName, setFirstName] = useState("");
@@ -70,8 +71,10 @@ const SignUpUserCredentialsStudent = ({ navigation }) => {
 	const [year, setYear] = useState("");
 	const [section, setSection] = useState("");
 
+	
 	return (
 		<SafeAreaView>
+		<StatusBar animated={true} backgroundColor="#E1F5E4" barStyle='dark-content'/>
 			<KeyboardAvoidingView
 				style={{ backgroundColor: "#E1F5E4", height: "100%" }}
 			>

@@ -106,7 +106,7 @@ const Login = ({ navigation }) => {
 
 	
 			<SafeAreaView style = {{backgroundColor :"#E1F5E4"}}>
-			<StatusBar animated={true} backgroundColor="#E1F5E4" />
+			<StatusBar animated={true} backgroundColor="#E1F5E4" barStyle='dark-content'/>
 			<KeyboardAvoidingView style={styles.container} behavior="height">
 			<View style={styles.imageContainer}>
 				<Image style={styles.image} source={image} />
@@ -146,7 +146,12 @@ const Login = ({ navigation }) => {
 			</View>
 
 			<View style={styles.buttonContainer}>
+<<<<<<< HEAD
 				<TouchableOpacity onPress={() => loginNow()} style={styles.button}>
+=======
+			{/* onPress={() =>navigation.navigate("Dashboard")} */}
+				<TouchableOpacity  onPress={() =>  loginNow()	} style={styles.button}>
+>>>>>>> eb6bfa34dfd9029cf588d8848fa0231280e0b88e
 					<Text style={styles.buttonText}>Log in</Text>
 				</TouchableOpacity>
 			</View>
