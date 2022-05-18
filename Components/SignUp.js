@@ -66,6 +66,7 @@ const SignUp = ({ navigation }) => {
 								setPassword("");
 								setConfirmPassword("");
 								setEmail("");
+								alert('Registered successfully')
 								navigation.navigate("Login");
 							}
 						})
@@ -124,8 +125,7 @@ const SignUp = ({ navigation }) => {
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity
 					onPress={() => {
-						//	validateUserInput();
-						navigation.navigate("SignUpUserType");
+						validateUserInput();
 					}}
 					style={styles.button}
 				>
